@@ -26,7 +26,9 @@
       case '!=':        return prop != condition
       case '!==':       return prop !== condition
       case '<':         return prop < condition
+      case '<=':        return prop <= condition
       case '>':         return prop > condition
+      case '>=':        return prop >= condition
       default:          return prop && !Handlebars.Utils.isEmpty(prop)
     }
   }
