@@ -41,8 +41,6 @@
     var args = Array.prototype.slice.call(arguments,1)
     var scopeIndex = args.indexOf('do') + 1 || args.indexOf('DO') + 1
     var scope = scopeIndex ? args[scopeIndex] : this
-    console.log('scopeIndex', scopeIndex)
-    console.log('scope', scope)
     var verb = args.length > 1 ? args[0] : null
     var condition = args.length > 2 ? args[1] : null
     var options = args[args.length - 1]

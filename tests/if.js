@@ -55,4 +55,20 @@ $(document).ready(function(x){
     x.call('if', 8, '>=', undefined);     equal(x.inverseCalled, 3, 'else block rendered when condition is undefined')
   })
 
+  test("<", 5, function(){
+    x.call('if', 2, '<', 4);              equal(x.fnCalled, 1, 'if block rendered when prop < condition')
+    x.call('if', 2, '<', 2);              equal(x.inverseCalled, 1, 'else block rendered when prop == condition')
+    x.call('if', 2, '<', 1);              equal(x.inverseCalled, 2, 'else block rendered when prop > condition')
+    x.call('if', undefined, '<', 2);      equal(x.inverseCalled, 3, 'else block rendered when prop is undefined')
+    x.call('if', 2, '<', undefined);      equal(x.inverseCalled, 4, 'else block rendered when condition is undefined')
+  })
+
+  test("<=", 5, function(){
+    x.call('if', 2, '<=', 4);             equal(x.fnCalled, 1, 'if block rendered when prop < condition')
+    x.call('if', 2, '<=', 2);             equal(x.fnCalled, 2, 'if block rendered when prop == condition')
+    x.call('if', 2, '<=', 1);             equal(x.inverseCalled, 1, 'else block rendered when prop > condition')
+    x.call('if', undefined, '<=', 2);     equal(x.inverseCalled, 2, 'else block rendered when prop is undefined')
+    x.call('if', 2, '<=', undefined);     equal(x.inverseCalled, 3, 'else block rendered when condition is undefined')
+  })
+
 })
