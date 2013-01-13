@@ -19,6 +19,26 @@ $(document).ready(function(x){
     x.call('if', 1, '==', 1, 'do', {prop: 'b'});    equal(x.context.prop, 'b', 'block rendered with new context when provided')
   })
 
+  test("Unknown Verb", 2, function(){
+    x.call('if', true, 'foo', false);     equal(x.fnCalled, 1, 'if block rendered when prop == true and unknow verb provided')
+    x.call('if', false, 'foo', false);    equal(x.fnCalled, 1, 'else block rendered when prop == false and unknow verb provided')
+  })
+
+  test("in", 2, function(){
+    x.call('if', 7, 'in', [4,5,6,7]);     equal(x.fnCalled, 1, 'if block rendered when prop in list')
+    x.call('if', 2, 'in', [4,5,6,7]);     equal(x.inverseCalled, 1, 'else block rendered when prop not in list')
+  })
+
+  test("not in", 2, function(){
+    x.call('if', 2, 'not in', [4,5,6,7]);     equal(x.fnCalled, 1, 'if block rendered when prop not in list')
+    x.call('if', 4, 'not in', [4,5,6,7]);     equal(x.inverseCalled, 1, 'else block rendered when prop in list')
+  })
+
+  test("==", 2, function(){
+    x.call('if', 7, '==', '7');   equal(x.fnCalled, 1, 'if block rendered when prop == condition')
+    x.call('if', 7, '==', 8);     equal(x.inverseCalled, 1, 'else block rendered when prop != condition')
+  })
+
   test("==", 2, function(){
     x.call('if', 7, '==', '7');   equal(x.fnCalled, 1, 'if block rendered when prop == condition')
     x.call('if', 7, '==', 8);     equal(x.inverseCalled, 1, 'else block rendered when prop != condition')

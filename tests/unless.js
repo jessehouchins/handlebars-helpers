@@ -19,4 +19,9 @@ $(document).ready(function(x) {
     x.call('unless', 1, '==', 1, 'do', {prop: 'b'});    equal(x.context.prop, 'b', 'block rendered with new context when provided')
   })
 
+  test("Unknown Verb", 2, function(){
+    x.call('unless', false, 'foo', true);     equal(x.fnCalled, 1, 'unless block rendered when prop == false and unknow verb provided')
+    x.call('unless', true, 'foo', true);      equal(x.fnCalled, 1, 'else block rendered when prop == true and unknow verb provided')
+  })
+
 })
