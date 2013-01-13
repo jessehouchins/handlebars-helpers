@@ -3,18 +3,18 @@
   * https://github.com/jessehouchins/handlebars-helpers
   * copyright Jesse Houchins
   * MIT License
-  *
-  * Note: The only change here is using `if.apply` instead of `if.call`... why this isn't the default is beyond me.
   */
 
 (function(Handlebars){
 
-  Handlebars.registerHelper('unless', function(context, options) {
+  Handlebars.registerHelper('unless', function(context) {
+    var args = arguments
+    var options = args[args.length - 1]
     var fn = options.fn, inverse = options.inverse
     options.fn = inverse
     options.inverse = fn
 
-    return Handlebars.helpers['if'].apply(this, arguments)
+    return Handlebars.helpers['if'].apply(this, args)
   })
 
 })(Handlebars)
