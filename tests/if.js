@@ -101,7 +101,7 @@ $(document).ready(function(x){
     x.call('if', 'all', [2,3,5], '==', 4);    equal(x.inverseCalled, 1, 'else block rendered when not all props == condition')
   })
 
-  test("any", 2, function(){
+  test("no", 2, function(){
     x.call('if', 'no', [2,3,5], '==', 4);     equal(x.fnCalled, 1, 'if block rendered when no prop == condition')
     x.call('if', 'no', [2,3,4], '==', 4);     equal(x.inverseCalled, 1, 'else block rendered when at least one prop == condition')
   })
