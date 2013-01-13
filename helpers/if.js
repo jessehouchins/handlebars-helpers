@@ -12,11 +12,12 @@
   * 3. mathcing:            {{#if prop 'in' ['foo','bar']}}
   * 4. context switching:   {{#if prop 'do' newContext}}
   *                         {{#if prop 'verb' condition 'do' newContext}}
+  * 5. Collections:         {{#if 'any' collection 'prop' 'verb' condition}}
   */
 
 (function(Handlebars){
 
-  function ok(prop, verb, condition){
+  function ok(prop, verb, condition, check){
     var index = ([].concat(condition)).indexOf(prop)
     switch (verb) {
       case 'in':        return ~index
@@ -33,19 +34,47 @@
     }
   }
 
-  Handlebars.registerHelper('if', function(prop) {
+  function getProp(args){
+    var prop = args[(args[1] instanceof Array) ? 1 : 0]
+    if (typeof prop === "function") prop = prop.call(this)
+    return [].concat(prop)
+  }
 
-    if (typeof prop === "function") { prop = prop.call(this) }
+  function getVerb(args){
+    if (args[1] instanceof Array) return args.length > 3 ? args[2] : null
+    return args.length > 2 ? args[1] : null
+  }
 
-    // Set argument variables
-    var args = Array.prototype.slice.call(arguments,1)
+  function getCondition(args){
+    if (args[1] instanceof Array) return args.length > 4 ? args[3] : null
+    return args.length > 3 ? args[2] : null
+  }
+
+  function check(args){
+    var prop = getProp.call(this, args)
+    var verb = getVerb(args)
+    var condition = getCondition(args)
+    var matches = 0
+    var type = (args[1] instanceof Array) ? args[0] : 'all'
+
+    // Check for any, all, or no mathces
+    for (var i = 0; i < prop.length; i++){
+      if (ok(prop[i], verb, condition)) matches++
+      if (type === 'all' && i === matches) return false // all
+      else if (type === 'any' && matches > 0) return true // any
+    }
+    return type === 'all' || type === 'no' && !matches
+
+  }
+
+  Handlebars.registerHelper('if', function() {
+
+    var args = Array.prototype.slice.call(arguments)
+    var options = args[args.length - 1]
     var scopeIndex = args.indexOf('do') + 1 || args.indexOf('DO') + 1
     var scope = scopeIndex ? args[scopeIndex] : this
-    var verb = args.length > 1 ? args[0] : null
-    var condition = args.length > 2 ? args[1] : null
-    var options = args[args.length - 1]
 
-    if (ok(prop, verb, condition)){
+    if (check(args)){
       return options.fn(scope)
     } else {
       return options.inverse(scope)

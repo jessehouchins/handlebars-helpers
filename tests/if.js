@@ -91,4 +91,19 @@ $(document).ready(function(x){
     x.call('if', 2, '<=', undefined);     equal(x.inverseCalled, 3, 'else block rendered when condition is undefined')
   })
 
+  test("any", 2, function(){
+    x.call('if', 'any', [2,3,4], '==', 4);    equal(x.fnCalled, 1, 'if block rendered when any prop == condition')
+    x.call('if', 'any', [2,3,5], '==', 4);    equal(x.inverseCalled, 1, 'else block rendered when no prop == condition')
+  })
+
+  test("all", 2, function(){
+    x.call('if', 'all', [4,4,4], '==', 4);    equal(x.fnCalled, 1, 'if block rendered when any prop == condition')
+    x.call('if', 'all', [2,3,5], '==', 4);    equal(x.inverseCalled, 1, 'else block rendered when not all props == condition')
+  })
+
+  test("any", 2, function(){
+    x.call('if', 'no', [2,3,5], '==', 4);     equal(x.fnCalled, 1, 'if block rendered when no prop == condition')
+    x.call('if', 'no', [2,3,4], '==', 4);     equal(x.inverseCalled, 1, 'else block rendered when at least one prop == condition')
+  })
+
 })
