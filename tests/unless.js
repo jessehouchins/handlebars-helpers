@@ -4,28 +4,19 @@ $(document).ready(function(x) {
 
   module("#unless", x.lifecycle)
 
-  test("No Condition", 5, function() {
-    x.call('unless', false)
-    equal(x.fnCalled, 1)
-    equal(x.inverseCalled, 0)
-
-    x.call('unless', true)
-    equal(x.fnCalled, 1)
-    equal(x.inverseCalled, 1)
-
-    equal(x.context, x.defaultContext)
+  test("Default", 2, function(){
+    x.call('unless', false);     equal(x.fnCalled, 1, 'unless block rendered when prop is false')
+    x.call('unless', true);    equal(x.inverseCalled, 1, 'else block rendered when prop is true')
   })
 
-  test("No Condition - Context Swtich", 6, function() {
-    x.call('unless', false, 'do', {prop: 'a'})
-    equal(x.fnCalled, 1)
-    equal(x.inverseCalled, 0)
-    equal(x.context.prop, 'a')
+  test("Context Swtich", 2, function(){
+    x.call('unless', false);                       equal(x.context, x.defaultContext, 'block rendered with original context when none provided')
+    x.call('unless', false, 'do', {prop: 'a'});    equal(x.context.prop, 'a', 'block rendered with new context when provided')
+  })
 
-    x.call('unless', true, 'do', {prop: 'b'})
-    equal(x.fnCalled, 1)
-    equal(x.inverseCalled, 1)
-    equal(x.context.prop, 'b')
+  test("Condition", 2, function(){
+    x.call('unless', 1, '==', 1);                       equal(x.context, x.defaultContext, 'block rendered with original context when none provided')
+    x.call('unless', 1, '==', 1, 'do', {prop: 'b'});    equal(x.context.prop, 'b', 'block rendered with new context when provided')
   })
 
 })
