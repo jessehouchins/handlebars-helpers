@@ -1,7 +1,7 @@
 A collection of helpers for Handlebars
 ==================
 
-1. (#if)[#if] - with support for conditionals
+1. (if)[#if] - with support for conditionals
 2. (#unless)[#unless] - with support for conditionals (requires #if)
 
 
