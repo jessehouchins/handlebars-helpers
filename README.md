@@ -69,3 +69,8 @@ You may also include a ```do``` operator to evaluate the block with a different 
   ...
 {{/if}}
 ```
+
+\#unless
+----------
+
+```#unless``` a full-featured inverse of ```#if```. Conditions, Array checks and context swiching follow the same syntax as ```#if```.
