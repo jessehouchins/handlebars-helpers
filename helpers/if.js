@@ -12,12 +12,12 @@
   * 3. mathcing:            {{#if prop 'in' ['foo','bar']}}
   * 4. context switching:   {{#if prop 'do' newContext}}
   *                         {{#if prop 'verb' condition 'do' newContext}}
-  * 5. Collections:         {{#if 'any' collection 'prop' 'verb' condition}}
+  * 5. Collections:         {{#if 'any' collection 'prop' 'verb' condition 'do' newContext (options)}}
   */
 
 (function(Handlebars){
 
-  function ok(prop, verb, condition, check){
+  function ok(prop, verb, condition){
     var index = ([].concat(condition)).indexOf(prop)
     switch (verb) {
       case 'in':        return ~index
@@ -34,32 +34,36 @@
     }
   }
 
-  function getProp(args){
-    var prop = args[(args[1] instanceof Array) ? 1 : 0]
-    if (typeof prop === "function") prop = prop.call(this)
-    return [].concat(prop)
-  }
-
-  function getVerb(args){
-    if (args[1] instanceof Array) return args.length > 3 ? args[2] : null
-    return args.length > 2 ? args[1] : null
-  }
-
-  function getCondition(args){
-    if (args[1] instanceof Array) return args.length > 4 ? args[3] : null
-    return args.length > 3 ? args[2] : null
-  }
-
   function check(args){
-    var prop = getProp.call(this, args)
-    var verb = getVerb(args)
-    var condition = getCondition(args)
-    var matches = 0
-    var type = (args[1] instanceof Array) ? args[0] : 'all'
 
-    // Check for any, all, or no mathces
-    for (var i = 0; i < prop.length; i++){
-      if (ok(prop[i], verb, condition)) matches++
+    // Decide if we are checking a single item, or a list
+    var numArgs = args.length
+    var evenArgs = !(numArgs%2)
+    var checkMultiple = args[1] instanceof Array
+    var type = checkMultiple && args[0] || 'all'
+
+    // Context
+    var context = args[checkMultiple ? 1 : 0]
+    if (typeof context === "function") context = context.call(this)
+    context = [].concat(context)
+
+    // Prop Name (for any, all, no)
+    var propName
+    if (checkMultiple && evenArgs) propName = args[2]
+
+    // Condition
+    var condition, conditionIndex
+    if (checkMultiple && numArgs > 4) conditionIndex = evenArgs ? 4 : 3
+    else if (!checkMultiple && numArgs > 3) conditionIndex = 2
+    if (conditionIndex) condition = args[conditionIndex]
+
+    // Verb
+    var verb = args[conditionIndex - 1]
+
+    // Check for any, all, or no mathces the hard way
+    for (var i = 0, matches = 0; i < context.length; i++){
+      var prop = propName && context[i][propName] || context[i]
+      if (ok(prop, verb, condition)) matches++
       if (type === 'all' && i === matches) return false // all
       else if (type === 'any' && matches > 0) return true // any
     }

@@ -91,19 +91,25 @@ $(document).ready(function(x){
     x.call('if', 2, '<=', undefined);     equal(x.inverseCalled, 3, 'else block rendered when condition is undefined')
   })
 
-  test("any", 2, function(){
-    x.call('if', 'any', [2,3,4], '==', 4);    equal(x.fnCalled, 1, 'if block rendered when any prop == condition')
-    x.call('if', 'any', [2,3,5], '==', 4);    equal(x.inverseCalled, 1, 'else block rendered when no prop == condition')
+  test("any", 4, function(){
+    x.call('if', 'any', [2,3,4], '==', 4);              equal(x.fnCalled, 1, 'if block rendered when any value == condition')
+    x.call('if', 'any', [{a:1},{a:4}], 'a', '==', 4);   equal(x.fnCalled, 2, 'if block rendered when any value.prop == condition')
+    x.call('if', 'any', [2,3,5], '==', 4);              equal(x.inverseCalled, 1, 'else block rendered when no value == condition')
+    x.call('if', 'any', [{a:1},{a:3}], 'a', '==', 4);   equal(x.inverseCalled, 2, 'else block rendered when no value.prop == condition')
   })
 
-  test("all", 2, function(){
-    x.call('if', 'all', [4,4,4], '==', 4);    equal(x.fnCalled, 1, 'if block rendered when any prop == condition')
-    x.call('if', 'all', [2,3,5], '==', 4);    equal(x.inverseCalled, 1, 'else block rendered when not all props == condition')
+  test("all", 4, function(){
+    x.call('if', 'all', [4,4,4], '==', 4);              equal(x.fnCalled, 1, 'if block rendered when all values == condition')
+    x.call('if', 'all', [{a:4},{a:4}], 'a', '==', 4);   equal(x.fnCalled, 2, 'if block rendered when all value.prop == condition')
+    x.call('if', 'all', [2,3,5], '==', 4);              equal(x.inverseCalled, 1, 'else block rendered when not all values == condition')
+    x.call('if', 'all', [{a:4},{a:3}], 'a', '==', 4);   equal(x.inverseCalled, 2, 'else block rendered when not all value.prop == condition')
   })
 
-  test("no", 2, function(){
-    x.call('if', 'no', [2,3,5], '==', 4);     equal(x.fnCalled, 1, 'if block rendered when no prop == condition')
-    x.call('if', 'no', [2,3,4], '==', 4);     equal(x.inverseCalled, 1, 'else block rendered when at least one prop == condition')
+  test("no", 4, function(){
+    x.call('if', 'no', [2,3,5], '==', 4);               equal(x.fnCalled, 1, 'if block rendered when no value == condition')
+    x.call('if', 'no', [{a:1},{a:3}], 'a', '==', 4);    equal(x.fnCalled, 2, 'if block rendered when no value.prop == condition')
+    x.call('if', 'no', [2,3,4], '==', 4);               equal(x.inverseCalled, 1, 'else block rendered when at least one value == condition')
+    x.call('if', 'no', [{a:1},{a:4}], 'a', '==', 4);    equal(x.inverseCalled, 2, 'else block rendered when at least on value.prop == condition')
   })
 
 })
