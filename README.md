@@ -7,7 +7,7 @@ A collection of helpers for Handlebars. Current helpers:
 2. #unless - with support for conditionals (requires #if)
 
 
-#if
+\#if
 ----------
 
 This is a drop-in replacement for Handlebars default ```#if``` with added support for Array checking, context switching, and the following conditionals:
