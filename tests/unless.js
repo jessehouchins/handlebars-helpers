@@ -1,6 +1,6 @@
 $(document).ready(function(x) {
 
-  var x = TEST_HELPER
+  var x = Handlebars.MyCustomTestHelper
 
   module("#unless", x.lifecycle)
 

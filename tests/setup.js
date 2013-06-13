@@ -1,4 +1,6 @@
-var TEST_HELPER = {
+(function(Handlebars){
+
+var x = Handlebars.MyCustomTestHelper = {
 
   defaultContext: {},
   fnCalled: 0,
@@ -7,29 +9,41 @@ var TEST_HELPER = {
 
   lifecycle: {
     setup: function(){
-      TEST_HELPER.fnCalled = 0
-      TEST_HELPER.inverseCalled = 0
-      TEST_HELPER.context = TEST_HELPER.defaultContext
+      x.fnCalled = 0
+      x.inverseCalled = 0
+      x.context = x.defaultContext
     },
     teardown: function(){
-      TEST_HELPER.fnCalled = 0
-      TEST_HELPER.inverseCalled = 0
-      TEST_HELPER.context = TEST_HELPER.defaultContext
+      x.fnCalled = 0
+      x.inverseCalled = 0
+      x.context = x.defaultContext
     }
   },
 
   call: function(name){
     var opts = {
       fn: function(c){
-        TEST_HELPER.context = c
-        TEST_HELPER.fnCalled++
+        x.context = c
+        x.fnCalled++
       },
       inverse: function(c){
-        TEST_HELPER.context = c
-        TEST_HELPER.inverseCalled++
+        x.context = c
+        x.inverseCalled++
       }
     }
     var args = Array.prototype.splice.call(arguments,1).concat(opts)
-    Handlebars.helpers[name].apply(TEST_HELPER.defaultContext, args)
+    Handlebars.helpers[name].apply(x.defaultContext, args)
+  },
+
+  obj: function(props, proto){
+    var Obj = function(props){
+      for (var key in props) {
+        this[key] = props[key]
+      }
+    }
+    Obj.prototype = proto
+    return new Obj(props)
   }
 }
+
+})(Handlebars)
