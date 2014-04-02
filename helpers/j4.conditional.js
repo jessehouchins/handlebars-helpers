@@ -21,7 +21,7 @@
 
   Handlebars.Utils.j4 = {
 
-    verbRx: /^(in|not in|is|is a|is an|==|===|!=|!==|<|<=|>|>=)$/,
+    verbRx: /^(in|not in|is|is a|is an|==|===|!=|!==|<|<=|>|>=|matches)$/,
     arrayChecks: ['any','all','no'],
 
     scope: function(originalScope, args){
@@ -56,6 +56,7 @@
         case 'is':
         case 'is a':
         case 'is an':     return this.realTypeof(prop) === condition
+        case 'matches':   return this.realTypeof(condition) === 'regexp' && condition.test(prop)
         default:          return prop && !Handlebars.Utils.isEmpty(prop)
       }
     },

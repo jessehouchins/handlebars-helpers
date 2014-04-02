@@ -91,6 +91,13 @@ $(document).ready(function(x){
     x.call('if', 2, '<=', undefined);     equal(x.inverseCalled, 3, 'else block rendered when condition is undefined')
   })
 
+  test("matches", 3, function(){
+    var rx = /\d/g
+    x.call('if', 'A2Z', 'matches', rx);    equal(x.fnCalled, 1, 'if block rendered when match was not found')
+    x.call('if', 'abcd', 'matches', rx);   equal(x.inverseCalled, 1, 'else block rendered when match was found')
+    x.call('if', 0, 'matches', rx);        equal(x.fnCalled, 2, 'converting non-string values for regex match')
+  })
+
   test("any", 4, function(){
     x.call('if', 'any', [2,3,4], '==', 4);              equal(x.fnCalled, 1, 'if block rendered when any value == condition')
     x.call('if', 'any', [{a:1},{a:4}], 'a', '==', 4);   equal(x.fnCalled, 2, 'if block rendered when any value.prop == condition')
