@@ -112,4 +112,11 @@ $(document).ready(function(x){
     x.call('if', 'no', [{a:1},{a:4}], 'a', '==', 4);    equal(x.inverseCalled, 2, 'else block rendered when at least on value.prop == condition')
   })
 
+  test("multiple contexts", 4, function(){
+    x.call('if', 'any', 2, 3, 4, '==', 4);              equal(x.fnCalled, 1, 'if block rendered when any value == condition')
+    x.call('if', 'any', {a:1}, {a:4}, 'a', '==', 4);    equal(x.fnCalled, 2, 'if block rendered when any value.prop == condition')
+    x.call('if', 'any', 2, 3, 5, '==', 4);              equal(x.inverseCalled, 1, 'else block rendered when no value == condition')
+    x.call('if', 'any', {a:1}, {a:3}, 'a', '==', 4);    equal(x.inverseCalled, 2, 'else block rendered when no value.prop == condition')
+  })
+
 })

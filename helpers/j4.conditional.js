@@ -12,7 +12,9 @@
   * 3. mathcing:            {{#if prop 'in' ['foo','bar']}}
   * 4. context switching:   {{#if prop 'do' newContext}}
   *                         {{#if prop 'verb' condition 'do' newContext}}
-  * 5. Collections:         {{#if 'any' collection 'prop' 'verb' condition 'do' newContext (options)}}
+  * 5. Collections:         {{#if 'any' collection 'prop' 'verb' condition}}
+  * 5. Pseudo Collections:  {{#if 'all' object1 object2 'prop' 'verb' condition}}
+  * 5. Multiple Contexts:   {{#if 'no' foo bar 'verb' condition}}
   */
 
 (function(Handlebars){
@@ -39,6 +41,7 @@
 
     conditionOK: function(prop, verb, condition){
       var index = ([].concat(condition)).indexOf(prop)
+
       switch (verb) {
         case '==':        return prop == condition
         case '===':       return prop === condition
@@ -62,29 +65,40 @@
 
       // Find the verb and condition
       var verbIndex = this.verbIndex(args)
-      result.verb = args[verbIndex]
-      result.condition = args[verbIndex+1]
+      var conditionIndex = verbIndex+1
+      var propIndex = verbIndex-1
+      var contextStart= 0
+      var contextEnd = verbIndex
+
 
       // Determine the type of check (any, all, no)
       var checkMultiple = this.arrayChecks.indexOf(args[0]) !== -1
-      result.type = checkMultiple && args[0] || 'all'
+      if (checkMultiple) contextStart++
 
-      // Find the context
+      // Find the context - 0any 1context 2prop 3verb
       var context
-      if (checkMultiple) {
-        context = args.slice(1, verbIndex)
-      } else {
-        context = (typeof args[0] === "function") ? args[0].call(this) : args[0]
+
+      // Find the prop for check multiple cases
+      var propName = checkMultiple && typeof args[verbIndex-1] === 'string' && typeof args[verbIndex-2] !== 'string' && args[verbIndex-1]
+      if (propName) contextEnd--
+
+      // Handle multiple context args
+      if (checkMultiple && contextEnd - contextStart > 1) {
+        context = args.slice(contextStart, contextEnd)
+      }
+
+      // Make sure context is an array
+      else {
+        context = args[contextStart]
+        if (typeof context === "function") context = context.call(this)
         context = [].concat(context)
       }
+
+      result.type = checkMultiple && args[0] || 'all'
       result.context = context
-
-      // Prop Name (for any, all, no)
-      var contextHasProp = checkMultiple && typeof context[0] === 'object' && typeof context[context.length-1] === 'string'
-      result.propName = contextHasProp && context.pop()
-
-      // Check items in an array when it's the only context and checkMultiple is enabled
-      if (checkMultiple && Array.isArray(context[0]) && context.length === 1) result.context = context[0]
+      result.verb = args[verbIndex]
+      result.condition = args[conditionIndex]
+      result.propName = propName
 
       return result
     },
